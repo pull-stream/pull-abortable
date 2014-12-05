@@ -7,7 +7,10 @@ var Abortable = require('../')
 
 
 require('interleavings').test(function (async) {
-  var abortable = Abortable()
+  var done = false
+  var abortable = Abortable(function () {
+    done = true
+  })
   var o = []
 
   pull(
@@ -24,6 +27,7 @@ require('interleavings').test(function (async) {
     }),
     pull.drain(null, function (err) {
       assert.deepEqual(o, [1,2,3])
+      assert.ok(done)
       async.done()
     })
   )
