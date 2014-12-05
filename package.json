@@ -7,14 +7,15 @@
     "type": "git",
     "url": "git://github.com/dominictarr/pull-abortable.git"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
+    "interleavings": "~0.3.0",
+    "pull-stream": "~2.26.0"
   },
   "scripts": {
     "prepublish": "npm ls &&  npm test",
     "test": "set -e; for t in test/*.js; do node $t; done"
   },
   "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
-  "license": "MIT"  
+  "license": "MIT"
 }
