@@ -1,14 +1,15 @@
-function abortable() {
+function abortable(onEnd) {
   var aborted = false, reading = false, ended = false, _cb, _read
 
   function cancel () {
+    if(reading) return
     reading = true
     _read(aborted, function (err) {
       reading = false
       ended = err || true
+      if(onEnd) onEnd(err)
       if(_cb) _cb(err)
     })
-
   }
 
   function reader (read) {
@@ -16,20 +17,26 @@ function abortable() {
     return function (abort, cb) {
       if(abort) aborted = abort
       if(ended) return cb(ended)
-      if(reading) return _cb = cb
+      if(aborted) return _cb = cb, cancel()
       reading = true
       read(abort, function (end, data) {
-        if(end) ended = end
         reading = false
-        cb(end, data)
-        if(aborted && !ended && !reading) cancel()
+        if(end) {
+          ended = end
+          onEnd(ended === true ? null : ended)
+          cb(end)
+        }
+        else {
+          cb(end, data)
+          if(aborted && !ended && !reading) cancel()
+        }
       })
     }
   }
   reader.abort = function () {
     aborted = true
     if(ended) return
-    if(!reading) cancel()
+    cancel()
   }
 
   return reader
