@@ -15,7 +15,7 @@ pull(
   sink
 )
 //at any time you can abort the pipeline,
-//the soruce will be cleaned up, and any
+//the source will be cleaned up, and any
 //error will be passed to the sink next time it reads.
 atAnyTime(function () {
   abortable.abort()
