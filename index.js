@@ -7,8 +7,8 @@ function abortable(onEnd) {
     _read(aborted, function (err) {
       reading = false
       ended = err || true
-      if(onEnd) onEnd(err)
-      if(_cb) _cb(err)
+      if(onEnd) onEnd(ended === true ? null :  ended)
+      if(_cb) _cb(ended)
     })
   }
 
@@ -23,7 +23,7 @@ function abortable(onEnd) {
         reading = false
         if(end) {
           ended = end
-          onEnd(ended === true ? null : ended)
+          onEnd(ended === true ? null :  ended)
           cb(end)
         }
         else {
