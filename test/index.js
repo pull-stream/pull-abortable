@@ -26,7 +26,11 @@ require('interleavings').test(function (async) {
       })()
     }),
     pull.drain(null, function (err) {
-      assert.deepEqual(o, [1,2,3])
+      if(o.length == 3)
+        assert.deepEqual(o, [1,2,3])
+      else
+        assert.deepEqual(o, [1,2])
+
       assert.ok(done)
       async.done()
     })
