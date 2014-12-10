@@ -1,7 +1,7 @@
 {
   "name": "pull-abortable",
   "description": "a pull-stream which may be aborted",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "homepage": "https://github.com/dominictarr/pull-abortable",
   "repository": {
     "type": "git",
