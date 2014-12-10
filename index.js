@@ -8,14 +8,14 @@ function abortable(onEnd) {
   }
 
   function cancel () {
-    if(reading) {
-      return terminate(aborted)
+    ended = ended || true
+    terminate(aborted || ended)
+    if(!reading) {
+      reading = true
+      _read(aborted, function (err) {
+        reading = false
+      })
     }
-    terminate(ended = true)
-    reading = true
-    _read(aborted, function (err) {
-      reading = false
-    })
   }
 
   function reader (read) {
@@ -28,7 +28,7 @@ function abortable(onEnd) {
       reading = true
       read(abort, function (end, data) {
         reading = false
-        if(aborted) return
+        if(aborted) return !abort && read(aborted, function () {})
         if(!_cb) return
         var cb = _cb
         _cb = null
@@ -43,6 +43,7 @@ function abortable(onEnd) {
       })
     }
   }
+
   reader.abort = function () {
     aborted = true
     if(ended) return
