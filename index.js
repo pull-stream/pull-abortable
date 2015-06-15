@@ -1,17 +1,24 @@
 function abortable(onEnd) {
   var aborted = false, reading = false, ended = false, _cb, _read
 
+  function doEnd () {
+    if(!onEnd) return
+    if(aborted && aborted !== true) return onEnd(aborted)
+    if(ended && ended !== true) return onEnd(ended)
+    return onEnd(null)
+  }
+
   function terminate (err) {
-    if(onEnd) onEnd(ended === true ? null :  ended)
+    doEnd()
     var cb = _cb; _cb = null
-    if(cb) cb(ended)
+    if(cb) cb(aborted || ended)
   }
 
   function cancel () {
     ended = ended || true
     terminate(aborted || ended)
     _read(aborted, function (err) {
-      if(_cb) _cb(err)
+      if(_cb) _cb(err||aborted)
     })
   }
 
@@ -30,20 +37,20 @@ function abortable(onEnd) {
         var cb = _cb
         _cb = null
         if(end) {
-          ended = end
-          onEnd && onEnd(ended === true ? null :  ended)
-          cb(end)
+          ended = aborted || end
+          doEnd()
+          cb(aborted || end)
         }
         else {
-          cb(end, data)
+          cb(aborted || end, data)
         }
       })
     }
   }
 
-  reader.abort = function () {
-    aborted = true
+  reader.abort = function (err) {
     if(ended) return
+    aborted = err || true
     cancel()
   }
 
