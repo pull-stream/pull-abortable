@@ -20,6 +20,9 @@ pull(
 atAnyTime(function () {
   abortable.abort()
 })
+
+// abort the stream and end with an error
+abortable.abort(new Error('example'))
 ```
 
 ## License
