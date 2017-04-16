@@ -17,9 +17,10 @@ function abortable(onEnd) {
   function cancel () {
     ended = ended || true
     terminate(aborted || ended)
-    _read(aborted, function (err) {
-      if(_cb) _cb(err||aborted)
-    })
+    if(_read)
+      _read(aborted, function (err) {
+        if(_cb) _cb(err||aborted)
+      })
   }
 
   function reader (read) {
@@ -58,4 +59,6 @@ function abortable(onEnd) {
 }
 
 module.exports = abortable
+
+
 
